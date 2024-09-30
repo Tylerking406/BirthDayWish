@@ -1,13 +1,13 @@
 import {
-    Box,
-    createTheme,
-    ThemeProvider,
+  Box,
+  createTheme,
+  ThemeProvider,
 } from '@mui/material';
 import React, { useState } from 'react';
-import NavigationTabs from '../components/NavigationTabs'; // Import the NavigationTabs component
-import VideoBackground from '../components/VideoBackground';
-import MessageDisplay from './MessageDisplay';
-import PictureAudio from './PictureAudio';
+import NavigationTabs from '../components/NavigationTabs.js'; // Import the NavigationTabs component
+import VideoBackground from '../components/VideoBackground.js';
+import MessageDisplay from './MessageDisplay.js';
+import PictureAudio from './PictureAudio.js';
 
 const theme = createTheme({
   palette: {

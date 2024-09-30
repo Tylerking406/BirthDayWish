@@ -1,24 +1,9 @@
+// MessageDisplay.js
 import { Box, Paper, Typography } from '@mui/material';
 import 'animate.css'; // Import Animate.css
+import { collection, getDocs } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react';
-
-// Message array
-const messages = [
-  { header: "Happy 21st Birthday!", content: "Cheers to you on this amazing milestone!" },
-  { header: "You Shine Bright!", content: "Your smile lights up the world; keep shining!" },
-  { header: "21 Looks Fabulous!", content: "Embrace this year and all the adventures it brings!" },
-  { header: "Here's to You!", content: "May this year be filled with love, laughter, and unforgettable memories!" },
-  { header: "Birthday Wishes!", content: "Wishing you a day as wonderful as you are!" },
-  { header: "Maya Angelou", content: "You can't use up creativity. The more you use, the more you have." },
-  { header: "Pablo Picasso", content: "It takes a long time to become young." },
-  { header: "C.S. Lewis", content: "You are never too old to set another goal or to dream a new dream." },
-  { header: "Dr. Seuss", content: "You have brains in your head. You have feet in your shoes. You can steer yourself any direction you choose." },
-  { header: "Monkey D. Luffy", content: "I don't want to conquer anything. I just think the guy with the most freedom in this whole ocean… is the King!" },
-  { header: "Roronoa Zoro", content: "You don't get to decide how you die. You just have to live." },
-  { header: "Nami", content: "I'm not a hero; I'm just a girl who wants to be free!" },
-  { header: "Sanji", content: "A man's worth is not measured by how he treats the people he hates, but how he treats the people he loves." },
-  { header: "Tony Tony Chopper", content: "You can't make the world a better place by just sitting on the sidelines." },
-];
+import { db } from '../firebase.js'; // Import Firestore
 
 // Array of colors for background
 const colors = [
@@ -40,15 +25,33 @@ const animations = [
 ];
 
 const MessageDisplay = () => {
-  const [currentMessage, setCurrentMessage] = useState(messages[0]);
+  const [messages, setMessages] = useState([]); // State for messages
+  const [currentMessage, setCurrentMessage] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [colorIndex, setColorIndex] = useState(0); // Current color index
   const [animationClass, setAnimationClass] = useState(animations[0]); // Default animation
   const [charIndex, setCharIndex] = useState(0); // Current character index for animation
 
+  // Fetch messages from Firestore
   useEffect(() => {
+    const fetchMessages = async () => {
+      const messagesCollection = collection(db, 'messages'); // Specify your Firestore collection
+      const messageSnapshot = await getDocs(messagesCollection);
+      const messagesList = messageSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setMessages(messagesList); // Set messages from Firestore
+      setCurrentMessage(messagesList[0]); // Set the first message
+
+      // Debug: Log all fetched messages
+      console.log("Fetched messages:", messagesList);
+    };
+
+    fetchMessages();
+  }, []);
+
+  // Handle message rotation
+  useEffect(() => {
+    if (!messages.length) return; // Do nothing if no messages
     const interval = setInterval(() => {
-      // Set a new message
       setAnimationClass(animations[Math.floor(Math.random() * animations.length)]); // Random animation
       setCurrentIndex((prevIndex) => {
         const nextIndex = (prevIndex + 1) % messages.length;
@@ -57,10 +60,13 @@ const MessageDisplay = () => {
       });
       // Update color index, and reuse colors if needed
       setColorIndex((prevIndex) => (prevIndex + 1) % colors.length);
+
+      // Debug: Log current message being displayed
+      console.log("Currently displaying message:", messages[currentIndex]);
     }, 4000); // Change message and color every 4 seconds
 
     return () => clearInterval(interval);
-  }, []);
+  }, [messages]);
 
   useEffect(() => {
     // Animation interval for characters
@@ -104,29 +110,31 @@ const MessageDisplay = () => {
       </Typography>
 
       {/* Rotating messages */}
-      <Paper
-        sx={{
-          padding: 3,
-          maxWidth: 500,
-          margin: 'auto',
-          borderRadius: 2,
-          backgroundColor: colors[colorIndex], // Change background color based on color index
-          boxShadow: '0 8px 50px rgba(0, 0, 0, 0.2)',
-          transition: 'transform 0.3s ease-in-out',
-          '&:hover': {
-            transform: 'scale(1.05)',
-            boxShadow: '0 12px 24px rgba(0, 0, 0, 0.4)',
-          },
-        }}
-        className={`${animationClass} animate__animated`} // Apply the animation class
-      >
-        <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, color: '#3f51b5' }}>
-          {currentMessage.header}
-        </Typography>
-        <Typography variant="body1" sx={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: '1.1rem' }}>
-          {currentMessage.content}
-        </Typography>
-      </Paper>
+      {currentMessage && (
+        <Paper
+          sx={{
+            padding: 3,
+            maxWidth: 500,
+            margin: 'auto',
+            borderRadius: 2,
+            backgroundColor: colors[colorIndex], // Change background color based on color index
+            boxShadow: '0 8px 50px rgba(0, 0, 0, 0.2)',
+            transition: 'transform 0.3s ease-in-out',
+            '&:hover': {
+              transform: 'scale(1.05)',
+              boxShadow: '0 12px 24px rgba(0, 0, 0, 0.4)',
+            },
+          }}
+          className={`${animationClass} animate__animated`} // Apply the animation class
+        >
+          <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, color: '#3f51b5' }}>
+            {currentMessage.header}
+          </Typography>
+          <Typography variant="body1" sx={{ color: 'rgba(0, 0, 0, 0.7)', fontSize: '1.1rem' }}>
+            {currentMessage.content || currentMessage.text}
+          </Typography>
+        </Paper>
+      )}
     </Box>
   );
 };

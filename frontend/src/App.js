@@ -1,10 +1,10 @@
 // App.js
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import GalleryPage from './Gallery/GalleryPage';
-import GuestBooking from './guestbooking/GuestBooking';
-import HomePage from './Home/HomePage';
-import OurStory from './Story/OurStory';
+import GalleryPage from './Gallery/GalleryPage.js';
+import GuestBooking from './guestbooking/GuestBooking.js';
+import HomePage from './Home/HomePage.jsx';
+import OurStory from './Story/OurStory.js';
 
 const App = () => {
   return (

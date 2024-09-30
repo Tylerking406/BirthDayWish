@@ -2,8 +2,8 @@
 import CloseIcon from '@mui/icons-material/Close'; // Close icon
 import { Box, Button, Dialog, IconButton, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import NavigationTabs from '../components/NavigationTabs';
-import VideoBackground from '../components/VideoBackground';
+import NavigationTabs from '../components/NavigationTabs.js';
+import VideoBackground from '../components/VideoBackground.js';
 
 const images = [
   '/assets/images/1.jpg', '/assets/images/2.jpg', '/assets/images/3.jpg',

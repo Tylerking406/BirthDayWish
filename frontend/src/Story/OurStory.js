@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import React, { useRef, useState } from 'react';
-import NavigationTabs from '../components/NavigationTabs'; // Import the NavigationTabs component
-import VideoBackground from '../components/VideoBackground';
+import NavigationTabs from '../components/NavigationTabs.js'; // Import the NavigationTabs component
+import VideoBackground from '../components/VideoBackground.js';
 
 const OurStory = () => {
   const [tabValue, setTabValue] = useState(2); // Set to the index for "Our Story"

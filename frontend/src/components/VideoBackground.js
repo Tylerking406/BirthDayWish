@@ -1,7 +1,7 @@
 // VideoBackground.js
 import { Box } from '@mui/material';
 import React from 'react';
-import MultiVideoBackground from '../components/MultiVideoBackground';
+import MultiVideoBackground from '../components/MultiVideoBackground.jsx';
 
 const VideoBackground = ({ children }) => {
   const videos = [
