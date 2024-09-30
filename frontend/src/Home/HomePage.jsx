@@ -1,35 +1,46 @@
-import { Box, Button, Typography } from '@mui/material';
+// HomePage.js
+import {
+    Box,
+    createTheme,
+    ThemeProvider,
+    Typography
+} from '@mui/material';
 import React, { useState } from 'react';
+import NavigationTabs from '../components/NavigationTabs'; // Import the NavigationTabs component
 import VideoBackground from '../components/VideoBackground';
+import MessageDisplay from './MessageDisplay';
+
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#ff4081',
+    },
+    secondary: {
+      main: '#3f51b5',
+    },
+  },
+});
 
 const HomePage = () => {
-    const [videoError, setVideoError] = useState(false);
+  const [tabValue, setTabValue] = useState(0);
 
-    const handleVideoError = () => {
-        console.error("Video failed to load");
-        setVideoError(true);
-    };
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
-    return (
-        <VideoBackground 
-            src="/assets/videos/2.mp4" 
-            onError={handleVideoError}
-        >
-            <Box>
-                <Typography variant="h2" component="h1" gutterBottom>
-                    Welcome to My Website Home
-                </Typography>
-                <Button variant="contained" color="primary">
-                    Hello World
-                </Button>
-                {videoError && (
-                    <Typography color="error">
-                        Error: Video failed to load. Please check the console for more details.
-                    </Typography>
-                )}
-            </Box>
-        </VideoBackground>
-    );
+  return (
+    <ThemeProvider theme={theme}>
+      <VideoBackground>
+        <NavigationTabs tabValue={tabValue} handleTabChange={handleTabChange} />
+        <Box sx={{ mt: 10, textAlign: 'center' }}>
+          <MessageDisplay />
+          <Typography variant="h2" component="h1" gutterBottom sx={{ color: 'white', textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
+            Happy Birthday Thimmy
+          </Typography>
+        </Box>
+      </VideoBackground>
+    </ThemeProvider>
+  );
 };
 
 export default HomePage;
