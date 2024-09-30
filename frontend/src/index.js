@@ -1,13 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.js'; // Added .js extension
+import { NotificationProvider } from './context/NotificationContext.js'; // Import Notification Provider
 import './index.css';
 import reportWebVitals from './reportWebVitals.js'; // Added .js extension
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <NotificationProvider> {/* Wrap App with NotificationProvider */}
+      <App />
+    </NotificationProvider>
   </React.StrictMode>
 );
 

@@ -4,12 +4,14 @@ import { addDoc, collection } from 'firebase/firestore';
 import React, { useState } from 'react';
 import NavigationTabs from '../components/NavigationTabs.js';
 import VideoBackground from '../components/VideoBackground.js';
+import { useNotification } from '../context/NotificationContext.js'; // Import Notification Context
 import { db } from '../firebase.js'; // Import Firestore
 
 const GuestBooking = () => {
   const [tabValue, setTabValue] = useState(3); // Set to the index for "Guest Booking"
   const [name, setName] = useState(''); // State for the name input
   const [message, setMessage] = useState(''); // State for the message input
+  const { addNotification } = useNotification(); // Get addNotification function from context
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -27,6 +29,7 @@ const GuestBooking = () => {
         text: message, // Store the message
         createdAt: new Date(), // Optional: Add timestamp
       });
+      addNotification(`${name}: ${message}`); // Add the notification
       setName(''); // Clear the name input after submission
       setMessage(''); // Clear the message input after submission
       alert('Message sent!'); // Optional: Show success message
