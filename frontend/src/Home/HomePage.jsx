@@ -1,14 +1,13 @@
-// HomePage.js
 import {
     Box,
     createTheme,
     ThemeProvider,
-    Typography
 } from '@mui/material';
 import React, { useState } from 'react';
 import NavigationTabs from '../components/NavigationTabs'; // Import the NavigationTabs component
 import VideoBackground from '../components/VideoBackground';
 import MessageDisplay from './MessageDisplay';
+import PictureAudio from './PictureAudio';
 
 const theme = createTheme({
   palette: {
@@ -33,23 +32,10 @@ const HomePage = () => {
       <VideoBackground>
         <NavigationTabs tabValue={tabValue} handleTabChange={handleTabChange} />
 
-        <Box sx={{ mt: 15, textAlign: 'center' }}> {/* Moved the text down by increasing margin */}
-          <Typography 
-            variant="h2" 
-            component="h1" 
-            gutterBottom 
-            sx={{ 
-              color: 'white', 
-              textShadow: '2px 2px 4px rgba(0,0,0,0.5)',
-            }}
-          >
-            Wishing You an Amazing Day, Thimmy!
-          </Typography>
-        </Box>
-
         <Box sx={{ mt: 10, textAlign: 'center' }}>
           <MessageDisplay />
         </Box>
+        <PictureAudio />
       </VideoBackground>
     </ThemeProvider>
   );
