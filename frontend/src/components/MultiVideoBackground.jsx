@@ -8,30 +8,37 @@ const MultiVideoBackground = ({
     objectPosition = 'center'
 }) => {
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-    const videoRefs = useRef(videos.map(() => React.createRef()));
+    const videoRefs = useRef(videos.map(() => React.createRef())); // Create refs for each video
 
     useEffect(() => {
-        const currentVideo = videoRefs.current[currentVideoIndex].current;
+        const currentVideo = videoRefs.current[currentVideoIndex]?.current; // Safe access with optional chaining
         const nextVideoIndex = (currentVideoIndex + 1) % videos.length;
-        const nextVideo = videoRefs.current[nextVideoIndex].current;
+        const nextVideo = videoRefs.current[nextVideoIndex]?.current; // Safe access with optional chaining
 
-        const handleEnded = () => {
-            currentVideo.style.opacity = 0;
-            nextVideo.style.opacity = 1;
-            nextVideo.play();
-            setCurrentVideoIndex(nextVideoIndex);
-        };
+        // Ensure both current and next videos exist
+        if (currentVideo && nextVideo) {
+            const handleEnded = () => {
+                currentVideo.style.opacity = 0;
+                nextVideo.style.opacity = 1;
+                nextVideo.play();
+                setCurrentVideoIndex(nextVideoIndex);
+            };
 
-        currentVideo.addEventListener('ended', handleEnded);
+            currentVideo.addEventListener('ended', handleEnded);
 
-        return () => {
-            currentVideo.removeEventListener('ended', handleEnded);
-        };
+            // Cleanup on unmount or index change
+            return () => {
+                currentVideo.removeEventListener('ended', handleEnded);
+            };
+        }
     }, [currentVideoIndex, videos]);
 
     useEffect(() => {
-        videoRefs.current[currentVideoIndex].current.play();
-    }, []);
+        const currentVideo = videoRefs.current[currentVideoIndex]?.current; // Safe access with optional chaining
+        if (currentVideo) {
+            currentVideo.play();
+        }
+    }, [currentVideoIndex]); // Only runs when currentVideoIndex changes
 
     return (
         <Box
@@ -48,6 +55,7 @@ const MultiVideoBackground = ({
                     ref={videoRefs.current[index]}
                     muted
                     playsInline
+                    autoPlay // Ensure autoplay for the videos
                     style={{
                         position: 'absolute',
                         top: '50%',

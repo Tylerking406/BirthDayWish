@@ -42,7 +42,7 @@ const MessageDisplay = () => {
       setCurrentMessage(messagesList[0]); // Set the first message
 
       // Debug: Log all fetched messages
-      console.log("Fetched messages:", messagesList);
+     // console.log("Fetched messages:", messagesList);
     };
 
     fetchMessages();
@@ -62,7 +62,7 @@ const MessageDisplay = () => {
       setColorIndex((prevIndex) => (prevIndex + 1) % colors.length);
 
       // Debug: Log current message being displayed
-      console.log("Currently displaying message:", messages[currentIndex]);
+      //console.log("Currently displaying message:", messages[currentIndex]);
     }, 4000); // Change message and color every 4 seconds
 
     return () => clearInterval(interval);

@@ -1,54 +1,64 @@
 import { Box, Button, Typography } from '@mui/material';
+import { getDownloadURL, ref } from 'firebase/storage';
 import React, { useEffect, useRef, useState } from 'react';
+import { storage } from '../firebase.js'; // Make sure you import Firebase storage
 
 const PictureAudio = () => {
-  // Array of audio messages and corresponding images
+  // Array to store audio and image references in Firebase Storage
   const audioMessages = [
     {
-      src: '/assets/audios/liya.mp3', // Replace with actual audio path
-      img: '/assets/images/liya.jpg', // Replace with actual image path
+      audioRef: ref(storage, 'audios/liya.mp3'), // Reference to audio in Firebase Storage
+      imageRef: ref(storage, 'images/liya.jpg'), // Reference to image in Firebase Storage
       alt: 'Friend 1',
     },
     {
-      src: '/assets/audios/sive.mp3', // Replace with actual audio path
-      img: '/assets/images/sive.jpg', // Replace with actual image path
+      audioRef: ref(storage, 'audios/sive.mp3'),
+      imageRef: ref(storage, 'images/sive.jpg'),
       alt: 'Friend 2',
     },
     {
-      src: '/assets/audios/ntsika.mp3', // Replace with actual audio path
-      img: '/assets/images/ntsika.jpg', // Replace with actual image path
+      audioRef: ref(storage, 'audios/ntsika.mp3'),
+      imageRef: ref(storage, 'images/ntsika.jpg'),
       alt: 'Friend 3',
     },
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const audioRef = useRef(new Audio(audioMessages[currentIndex].src));
+  const [audioSrc, setAudioSrc] = useState('');
+  const [imageSrc, setImageSrc] = useState('');
+  const audioRef = useRef(new Audio());
+
+  // Function to fetch URLs from Firebase Storage and set the audio/image source
+  const fetchMediaURLs = async (index) => {
+    try {
+      // Get download URLs for the current audio and image
+      const audioURL = await getDownloadURL(audioMessages[index].audioRef);
+      const imageURL = await getDownloadURL(audioMessages[index].imageRef);
+
+      setAudioSrc(audioURL); // Set the audio source
+      setImageSrc(imageURL); // Set the image source
+    } catch (error) {
+      console.error('Error fetching media URLs:', error);
+    }
+  };
 
   // Function to play the audio
   const playAudio = () => {
-    console.log("Attempting to play audio:", audioMessages[currentIndex].src); // Debug statement
+    audioRef.current.src = audioSrc; // Set the audio source
     audioRef.current.play().then(() => {
-      console.log("Audio playing successfully"); // Debug statement
+      console.log("Audio playing successfully");
     }).catch((error) => {
-      console.error("Error playing audio:", error); // Debug statement
+      console.error("Error playing audio:", error);
     });
   };
 
   useEffect(() => {
-    // Set up audio source
-    audioRef.current.src = audioMessages[currentIndex].src; // Update the audio source on index change
-    console.log("Audio source updated to:", audioRef.current.src); // Debug statement
+    // Fetch media URLs when the component mounts or when currentIndex changes
+    fetchMediaURLs(currentIndex);
 
     const handleEnded = () => {
-      console.log("Audio ended, moving to next message"); // Debug statement
-      // Move to the next audio when the current one ends
-      setCurrentIndex((prevIndex) => {
-        const nextIndex = (prevIndex + 1) % audioMessages.length;
-        audioRef.current.src = audioMessages[nextIndex].src; // Update audio source
-        console.log("Next audio source set to:", audioRef.current.src); // Debug statement
-        playAudio(); // Play the next audio
-        return nextIndex;
-      });
+      // Move to the next audio message when the current one ends
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % audioMessages.length);
     };
 
     audioRef.current.addEventListener('ended', handleEnded);
@@ -58,7 +68,7 @@ const PictureAudio = () => {
       audioRef.current.removeEventListener('ended', handleEnded);
       audioRef.current.pause();
     };
-  }, [currentIndex]); // Dependency on currentIndex
+  }, [currentIndex, audioSrc]); // Dependencies on currentIndex and audioSrc
 
   return (
     <Box sx={{ mt: 5 }}>
@@ -71,12 +81,14 @@ const PictureAudio = () => {
           padding: 2, // Optional: Add padding inside the box
         }}
       >
-        <img
-          src={audioMessages[currentIndex].img}
-          alt={audioMessages[currentIndex].alt}
-          style={{ width: '200px', height: 'auto', borderRadius: '10px', marginBottom: '10px', cursor: 'pointer' }}
-          onClick={playAudio} // Add onClick event to play audio
-        />
+        {imageSrc && (
+          <img
+            src={imageSrc}
+            alt={audioMessages[currentIndex].alt}
+            style={{ width: '200px', height: 'auto', borderRadius: '10px', marginBottom: '10px', cursor: 'pointer' }}
+            onClick={playAudio} // Add onClick event to play audio
+          />
+        )}
         <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 1, color: '#3f51b5' }}>
           {audioMessages[currentIndex].alt}'s Message
         </Typography>
