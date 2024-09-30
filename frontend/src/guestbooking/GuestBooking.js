@@ -54,7 +54,7 @@ const GuestBooking = () => {
           }}
         >
           <Typography variant="h4" sx={{ color: 'white', mb: 2 }}>
-            Welcome to Guest Booking
+            Enter a message for Thimna
           </Typography>
           <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '400px' }}>
             <TextField

@@ -1,27 +1,18 @@
-// GalleryPage.js
 import CloseIcon from '@mui/icons-material/Close'; // Close icon
 import { Box, Button, Dialog, IconButton, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import { getDownloadURL, listAll, ref } from 'firebase/storage';
+import React, { useEffect, useState } from 'react';
 import NavigationTabs from '../components/NavigationTabs.js';
 import VideoBackground from '../components/VideoBackground.js';
-
-const images = [
-  '/assets/images/1.jpg', '/assets/images/2.jpg', '/assets/images/3.jpg',
-  '/assets/images/4.jpg', '/assets/images/5.jpg', '/assets/images/6.jpg',
-  '/assets/images/7.jpg', '/assets/images/8.jpg', '/assets/images/9.jpg',
-  '/assets/images/10.jpg', '/assets/images/11.jpg', '/assets/images/12.jpg'
-];
-
-const videos = [
-  '/assets/videos/1.mp4', '/assets/videos/2.mp4', 
-  '/assets/videos/3.mp4', '/assets/videos/4.mp4'
-];
+import { storage } from '../firebase.js'; // Import your Firebase config
 
 const GalleryPage = () => {
   const [tabValue, setTabValue] = useState(1); // Controls which tab is active
   const [showImages, setShowImages] = useState(true); // Toggle images/videos
   const [openModal, setOpenModal] = useState(false); // Control modal visibility
   const [selectedImage, setSelectedImage] = useState(null); // Store selected image
+  const [images, setImages] = useState([]); // State for images
+  const [videos, setVideos] = useState([]); // State for videos
 
   const handleTabChange = (event, newValue) => setTabValue(newValue);
 
@@ -34,6 +25,32 @@ const GalleryPage = () => {
     setOpenModal(false); // Close modal
     setSelectedImage(null); // Reset selected image
   };
+
+  // Fetch images and videos from Firebase on component mount
+  useEffect(() => {
+    const fetchImages = async () => {
+      const imageListRef = ref(storage, 'images/'); // Adjust your path as necessary
+      const imageList = await listAll(imageListRef);
+      const imagePromises = imageList.items.map((item) =>
+        getDownloadURL(item).then((url) => url)
+      );
+      const imageUrls = await Promise.all(imagePromises);
+      setImages(imageUrls);
+    };
+
+    const fetchVideos = async () => {
+      const videoListRef = ref(storage, 'videos/'); // Adjust your path as necessary
+      const videoList = await listAll(videoListRef);
+      const videoPromises = videoList.items.map((item) =>
+        getDownloadURL(item).then((url) => url)
+      );
+      const videoUrls = await Promise.all(videoPromises);
+      setVideos(videoUrls);
+    };
+
+    fetchImages();
+    fetchVideos();
+  }, []);
 
   return (
     <VideoBackground>

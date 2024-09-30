@@ -6,17 +6,17 @@ const PictureAudio = () => {
   const audioMessages = [
     {
       src: '/assets/audios/liya.mp3', // Replace with actual audio path
-      img: '/assets/images/5.jpg', // Replace with actual image path
+      img: '/assets/images/liya.jpg', // Replace with actual image path
       alt: 'Friend 1',
     },
     {
       src: '/assets/audios/sive.mp3', // Replace with actual audio path
-      img: '/assets/images/6.jpg', // Replace with actual image path
+      img: '/assets/images/sive.jpg', // Replace with actual image path
       alt: 'Friend 2',
     },
     {
       src: '/assets/audios/ntsika.mp3', // Replace with actual audio path
-      img: '/assets/images/44.jpg', // Replace with actual image path
+      img: '/assets/images/ntsika.jpg', // Replace with actual image path
       alt: 'Friend 3',
     },
   ];

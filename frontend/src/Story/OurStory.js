@@ -51,7 +51,7 @@ const OurStory = () => {
             sx={{ color: 'white', mb: 2, cursor: 'pointer' }} // Change cursor to pointer
             onClick={handleTextClick} // Call handleTextClick on click
           >
-            Welcome to Our Story
+            Feature coming soon :)
           </Typography>
           {showVideo && ( // Conditionally render the video
             <video
